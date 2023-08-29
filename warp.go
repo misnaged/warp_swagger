@@ -2,13 +2,14 @@ package main
 
 import (
 	"github.com/misnaged/annales/logger"
-	"warp_swagger/yaml_reader"
+	"warp_swagger/yaml_parser"
 )
 
 func main() {
 	path := "get.yaml"
-	_, err := yaml_reader.NewReader(path)
+	p, err := yaml_parser.NewParser(path)
 	if err != nil {
 		logger.Log().Errorf("%v", err)
 	}
+	p.CollectRESTmethods()
 }
