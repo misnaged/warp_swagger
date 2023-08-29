@@ -5,11 +5,15 @@ import (
 	"gopkg.in/yaml.v3"
 	_ "gopkg.in/yaml.v3"
 	"os"
+	"warp_swagger/utils"
 )
 
+type SwaggerMaps struct {
+	DefinitionsMap, ResponsesMap, PathsMap, ParametersMap map[string]any
+}
 type SwaggerCfg struct {
-	Swagger string `yaml:"swagger"`
-	//NodesMap    map[string][]*yaml.Node
+	SwagBP      *SwaggerMaps
+	Swagger     string       `yaml:"swagger"`
 	Paths       *Paths       `yaml:"paths,flow"`
 	Info        *Info        `yaml:"info,flow"`
 	BasePath    string       `yaml:"basePath"`
@@ -21,7 +25,18 @@ type SwaggerCfg struct {
 	Definitions *Definitions `yaml:"definitions,flow"`
 }
 type Paths struct {
-	// TODO
+	PathNode []*yaml.Node
+}
+type Parameters struct {
+	ParametersNode []*yaml.Node
+}
+
+type Responses struct {
+	ResponsesNode []*yaml.Node
+}
+
+type Definitions struct {
+	DefinitionsNode []*yaml.Node
 }
 
 // **** only for demo *** //
@@ -52,41 +67,6 @@ type Consumes struct {
 type Produces struct {
 }
 
-type Parameters struct {
-}
-
-type Responses struct {
-}
-
-type Definitions struct {
-}
-
-//func (swg *SwaggerCfg) GetMap(path string) map[string][]*yaml.Node {
-//	f, err := os.ReadFile(path)
-//	if err != nil {
-//		log.Fatalf("error: %v", err)
-//	}
-//	var newNode yaml.Node
-//	err = yaml.Unmarshal(f, &newNode)
-//	if err != nil {
-//		log.Fatalf("error: %v", err)
-//	}
-//	root := newNode.Content[0].Content
-//
-//	nodesMap := AddToMap(root, swg.NodesMap)
-//
-//	return nodesMap
-//}
-//func AddToMap(root []*yaml.Node, nodesMap map[string][]*yaml.Node) map[string][]*yaml.Node {
-//	for i := 0; i < len(root)-1; i += 2 {
-//		nodesMap[root[i].Value] = nil
-//	}
-//	for i := 1; i < len(root)-1; i += 2 {
-//		nodesMap[root[i-1].Value] = root[i].Content
-//	}
-//	return nodesMap
-//}
-
 func NewName(prefix, toAdd string) string {
 	return fmt.Sprintf("%s_%s", prefix, toAdd)
 }
@@ -96,6 +76,23 @@ func (swg *SwaggerCfg) GetPaths() yaml.Node {
 	return node
 }
 
+func NodeCollector(f []byte) (*yaml.Node, error) {
+	var Node yaml.Node
+	err := yaml.Unmarshal(f, &Node)
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+	return &Node, nil
+}
+
+func newSwaggerMaps(definitions, responses, paths, parameters map[string]any) *SwaggerMaps {
+	return &SwaggerMaps{
+		DefinitionsMap: definitions,
+		ResponsesMap:   responses,
+		PathsMap:       paths,
+		ParametersMap:  parameters,
+	}
+}
 func NewSwaggerCfg(path string) (*SwaggerCfg, error) {
 	var swag *SwaggerCfg
 
@@ -107,11 +104,40 @@ func NewSwaggerCfg(path string) (*SwaggerCfg, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error: %w", err)
 	}
-	fmt.Println("swagger", swag.Swagger)
+	CollectedNode, err := NodeCollector(f)
+	if err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
 
-	//return &SwaggerCfg{
-	//	NodesMap: make(map[string][]*yaml.Node),
-	//}
+	// ***   paths  *** //
+	swag.Paths.PathNode = assign(CollectedNode, swag.Paths.PathNode, "paths")
+	pathsMap := utils.Unwrap(swag.Paths.PathNode)
+
+	// ***   definitions *** //
+	swag.Definitions.DefinitionsNode = assign(CollectedNode, swag.Definitions.DefinitionsNode, "definitions")
+	definitionsMap := utils.Unwrap(swag.Definitions.DefinitionsNode)
+
+	// ***   responses   *** //
+	swag.Responses.ResponsesNode = assign(CollectedNode, swag.Responses.ResponsesNode, "responses")
+	responsesMap := utils.Unwrap(swag.Responses.ResponsesNode)
+
+	// ***   parameters   *** //
+	swag.Parameters.ParametersNode = assign(CollectedNode, swag.Parameters.ParametersNode, "parameters")
+	parametersMap := utils.Unwrap(swag.Parameters.ParametersNode)
+
+	// merging maps ...
+
+	swag.SwagBP = newSwaggerMaps(definitionsMap, responsesMap, pathsMap, parametersMap)
+
 	return swag, nil
 
+}
+
+func assign(node *yaml.Node, appendNode []*yaml.Node, assignee string) []*yaml.Node {
+	for i := range node.Content[0].Content {
+		if node.Content[0].Content[i].Value == assignee {
+			appendNode = append(appendNode, node.Content[0].Content[i+1].Content...)
+		}
+	}
+	return appendNode
 }
