@@ -1,0 +1,101 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Warp GET example"
+  description: "blablabla"
+  termsOfService: 111
+
+  contact:
+    name: "Misnaged"
+  license:
+    name: "MIT"
+
+basePath: "/"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+paths:
+  /shops/{name}:
+    parameters:
+      - $ref: '#/parameters/name'
+    get:
+      tags:
+        - shops
+      operationId: getShop
+      description: get Shop details by its name
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/shop'
+        default:
+          $ref: '#/responses/errorResponse'
+
+parameters:
+  name:
+    description: models name getter
+    in: path
+    name: name
+    required: true
+    type: string
+
+responses:
+  errorResponse:
+    description: Error
+    schema:
+      $ref: '#/definitions/error'
+
+definitions:
+  shop:
+    description: shop model
+    type: object
+    properties:
+      uuid:
+        description: shop uuid
+        type: string
+        format: uuid
+        example: e0527b4c-926c-4a3f-8849-b7c4d9c348ca
+      name:
+        description: shop name
+        type: string
+        example: acme shop
+      description:
+        description: shop description
+        type: string
+        example: acme is a multi brand fashion space
+      url:
+        description: shop address
+        type: string
+        format: uri
+    required:
+      - uuid
+      - name
+      - description
+      - url
+  error:
+    description: the error model uses for all error responses
+    type: object
+    properties:
+      code:
+        description: error code
+        type: integer
+        format: int64
+        example: 500
+      message:
+        description: error message
+        type: string
+        example: internal server error
+      payload:
+        description: payload definition depended on specific request
+        type: object
+        additionalProperties:
+          type: string
+    required:
+      - message
+      - code
+
+
