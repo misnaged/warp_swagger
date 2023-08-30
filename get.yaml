@@ -34,7 +34,36 @@ paths:
             $ref: '#/definitions/shop'
         default:
           $ref: '#/responses/errorResponse'
-
+  /shops/{sss}:
+    parameters:
+      - $ref: '#/parameters/name'
+    get:
+      tags:
+        - shops
+      operationId: getShop
+      description: get Shop details by its name
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/shop'
+        default:
+          $ref: '#/responses/errorResponse'
+  /shops/{aaa}:
+    parameters:
+      - $ref: '#/parameters/name'
+    post:
+      tags:
+        - shops
+      operationId: getShop
+      description: get Shop details by its name
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/shop'
+        default:
+          $ref: '#/responses/errorResponse'
 parameters:
   name:
     description: models name getter
