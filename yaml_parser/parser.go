@@ -1,11 +1,11 @@
 package yaml_parser
 
 import (
-	"errors"
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"warp_swagger/config_swagger"
 	"warp_swagger/utils"
+	"warp_swagger/warp_errors"
 )
 
 type Parser struct {
@@ -23,58 +23,39 @@ func NewParser(path string) (*Parser, error) {
 	return p, nil
 }
 
-var ErrNilMap = errors.New("path map is nil")
-
-// countRESTmethods needed to sum all REST methods
-// being provided within swagger config and return the sum number
-// Basically, needed only for CollectRESTmethods
-// where we need to set the length of []map[string]any
-func (p *Parser) countRESTmethods() (int, error) {
-	var count int
-	m := p.SwaggerCfg.SwagBP.PathsMap
-	for title := range m {
-		pm := m[title].([]*yaml.Node)
-		if pm == nil {
-			return 0, ErrNilMap
-		}
-		for i := range pm {
-			switch pm[i].Value {
-			case "post":
-				count += 1
-			case "get":
-				count += 1
-			}
-		}
+func (p *Parser) CollectDefinitions() ([]map[string]any, error) {
+	m := p.SwaggerCfg.SwagBP.DefinitionsMap
+	mapArr, err := utils.PrepareMapArray(m, utils.DefinitionsMAT)
+	if err != nil {
+		return nil, fmt.Errorf("collecting definitions ended with an error: %w", err)
 	}
-	return count, nil
+	mapArr = append(mapArr, utils.Unwrap(p.SwaggerCfg.Definitions.DefinitionsNode))
+	return mapArr, nil
 }
 
 // CollectRESTmethods searching any (post and get, at this time) kind of REST methods
 // in the 'paths' section of config (where they normally should be defined)
 func (p *Parser) CollectRESTmethods() ([]map[string]any, error) {
 	m := p.SwaggerCfg.SwagBP.PathsMap
-	count, err := p.countRESTmethods()
+	mapArr, err := utils.PrepareMapArray(m, utils.RestMethodsMAT)
 	if err != nil {
-		return nil, fmt.Errorf("error while counting rest methods: %w", err)
+		return nil, fmt.Errorf("collecting rest methods ended with an error: %w", err)
 	}
-	restMap := make([]map[string]any, count)
-
-	restMap = append(restMap[count:]) // cut empty maps
 
 	for title := range m {
 		pm := m[title].([]*yaml.Node)
 		if pm == nil {
-			return nil, ErrNilMap
+			return nil, warp_errors.ErrNilMap
 		}
 		for i := range pm {
 			switch pm[i].Value {
 			case "post":
-				restMap = append(restMap, utils.Unwrap(pm))
+				mapArr = append(mapArr, utils.Unwrap(pm))
 			case "get":
-				restMap = append(restMap, utils.Unwrap(pm))
+				mapArr = append(mapArr, utils.Unwrap(pm))
 			}
 		}
 
 	}
-	return restMap, nil
+	return mapArr, nil
 }

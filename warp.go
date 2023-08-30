@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/misnaged/annales/logger"
+	"gopkg.in/yaml.v3"
 	"warp_swagger/yaml_parser"
 )
 
@@ -13,11 +14,10 @@ func main() {
 		logger.Log().Errorf("%v", err)
 	}
 
-	m, err := p.CollectRESTmethods()
+	m, err := p.CollectDefinitions()
 	if err != nil {
 		logger.Log().Errorf("%v", err)
 	}
-	for i := range m {
-		fmt.Println(m[i])
-	}
+
+	fmt.Println(m[0]["shop"].([]*yaml.Node)[0].Value)
 }

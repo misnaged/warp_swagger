@@ -126,5 +126,195 @@ definitions:
     required:
       - message
       - code
-
+  purchaseResponse:
+    description: response from purchase handler with token and redirect url
+    type: object
+    properties:
+      token:
+        type: string
+  activity:
+    description: user activity data
+    type: object
+    properties:
+      user:
+        description: activity related user
+        $ref: '#/definitions/userShort'
+      player:
+        description: activity related player
+        type: object
+        properties:
+          uuid:
+            description: player uuid
+            type: string
+            format: uuid
+            example: e0527b4c-926c-4a3f-8849-b7c4d9c348ca
+          name:
+            description: player name
+            type: string
+            example: player
+          club:
+            description: player club name
+            type: string
+            example: club
+        required:
+          - uuid
+          - name
+          - club
+      price:
+        description: activity transaction total price
+        type: number
+        format: float64
+        example: 5000.00
+      amount:
+        description: activity transaction stocks amount
+        type: number
+        format: int64
+        example: 4
+      type:
+        description: >
+          Activity type:
+            * buy - user bought stocks
+            * sell - user sold stocks
+        type: string
+        enum:
+          - buy
+          - sell
+        example: buy
+      timestamp:
+        description: activity timestamp
+        type: integer
+        format: 'date-time'
+        example: 1602603110
+    required:
+      - user
+      - player
+      - price
+      - amount
+      - type
+      - timestamp
+  battle:
+    description: battle model
+    type: object
+    properties:
+      uuid:
+        description: battle uuid
+        type: string
+        format: uuid
+        example: e0527b4c-926c-4a3f-8849-b7c4d9c348ca
+      name:
+        description: battle name
+        type: string
+        example: battle
+      creator:
+        description: battle creator
+        $ref: '#/definitions/userShort'
+      description:
+        description: battle description
+        type: string
+        example: battle battle
+      is_private:
+        description: is battle private
+        type: boolean
+        example: false
+      is_premium:
+        description: is this battle premium?
+        type: boolean
+        example: false
+      status:
+        description: >
+          battle status:
+            * active
+            * waiting
+            * closed
+            * cancelled
+        type: string
+        enum:
+          - active
+          - waiting
+          - closed
+          - cancelled
+      fee:
+        description: battle fee
+        type: number
+        format: float64
+        example: 10.99
+      ksx_fee:
+        description: fee needed for taking a part into Kickstox Premium battle
+        type: integer
+        example: 20
+      invited:
+        description: list of battle invited users
+        type: array
+        items:
+          $ref: '#/definitions/userShort'
+      members:
+        description: list ofbattle members
+        type: array
+        items:
+          $ref: '#/definitions/userShort'
+      start_at:
+        description: when battle starts
+        type: integer
+        format: 'date-time'
+        example: 1602603110
+      end_at:
+        description: when battle ends
+        type: integer
+        format: 'date-time'
+        example: 1602603110
+      prizes:
+        description: battle prizes
+        type: array
+        items:
+          description: battle prize
+          type: number
+          format: float64
+          example: 100.99
+      duration:
+        description: battle duration (in seconds)
+        type: number
+        format: float64
+        example: 5400000
+      battle_code:
+        description: battle refferal code
+        type: string
+        example: 0oVVVVVVDDD
+      is_invited:
+        description: is user invited to battle
+        type: boolean
+        example: true
+        default: false
+      is_member:
+        description: is user battle member
+        type: boolean
+        example: true
+        default: false
+      is_creator:
+        description: is user battle creator
+        type: boolean
+        example: false
+        default: false
+      url:
+        description: battle url
+        type: string
+        format: uri
+    required:
+      - uuid
+      - name
+      - creator
+      - description
+      - is_private
+      - status
+      - fee
+      - invited
+      - members
+      - start_at
+      - end_at
+      - prizes
+      - duration
+      - battle_code
+      - is_member
+      - is_invited
+      - is_creator
+      - url
 
