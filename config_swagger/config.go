@@ -7,5 +7,4 @@ type SwaggerCfg struct {
 }
 
 func (s *SwaggerCfg) GetSpec() {
-	s.Spec.Definitions
 }

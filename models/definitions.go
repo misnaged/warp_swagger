@@ -16,6 +16,6 @@ func NewDefinition(n string, dm ...*DefProps) *Definitions {
 	}
 }
 
-//func NewDefProp(n string, propType any) *DefProps {
-//
-//}
+func NewDefProp(n string, propType any) *DefProps {
+	return nil // todo complete!
+}

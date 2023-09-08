@@ -1,3 +1,14 @@
+/*
+
+
+
+	 	Deprecated,
+
+		but could be used in future
+		if we would be needed to parse raw .yml
+
+*/
+
 package yaml_parser
 
 /*
