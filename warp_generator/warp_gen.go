@@ -98,32 +98,3 @@ func (t *Template) GenerateNonGo() error {
 	}
 	return nil
 }
-
-// ModelsFunc is
-func ModelsFunc(m ...string) func() []string {
-	foo := func() []string {
-		return m
-	}
-	return foo
-}
-
-// TODO: hardcoded!
-// FIX ME
-
-// NewRequestTemplate is
-func NewRequestTemplate(path, output string, ifaces []any, intern, extern []string, elems ...string) ITemplate {
-	t := &Template{}
-	t.ConfigTemplatePath = path
-	t.OutPutFilePath = output
-	t.Elems = elems
-	t.Ifaces = ifaces
-	t.FuncMap = template.FuncMap{"ModelsFuncInt": ModelsFunc(intern...), "ModelsFuncExt": ModelsFunc(extern...)}
-	return t
-}
-
-type Templates []ITemplate
-
-func GetAll(templates ...ITemplate) Templates {
-	templates = append(templates, templates...)
-	return templates
-}

@@ -2,119 +2,70 @@ package utils
 
 import (
 	"fmt"
-	"github.com/go-swagger/go-swagger/cmd/swagger/commands/generate"
-	"github.com/jessevdk/go-flags"
-	"github.com/misnaged/annales/logger"
-	"go/ast"
-	"golang.org/x/tools/go/packages"
-	"os"
-	"strings"
+	"gopkg.in/yaml.v3"
+	"warp_swagger/warp_errors"
 )
 
-func BytesFromFile(path string) []byte {
-	b, _ := os.ReadFile(path)
-	return b
-}
+type MapArrayType int
 
-func GoFiles(pathPart string) []string {
-	cfg := &packages.Config{Mode: packages.NeedFiles}
-	var Goes []string
-	path := fmt.Sprintf("./%s/models", pathPart)
-	pkgs, err := packages.Load(cfg, path)
-	if err == nil {
-		for _, pkg := range pkgs {
-			for i := range pkg.GoFiles {
-				Goes = append(Goes, pkg.GoFiles[i])
-			}
+const (
+	RestMethodsMAT MapArrayType = iota
+	DefinitionsMAT
+	ResponsesMAT
+)
 
+func Unwrap(node []*yaml.Node) map[string]any {
+	nodeMap := make(map[string]any)
+	for i := 0; i < len(node)-1; i += 2 {
+		if len(node[i+1].Content) <= 0 {
+			nodeMap[node[i].Value] = node[i+1].Value
+		} else {
+			nodeMap[node[i].Value] = node[i+1].Content
 		}
 	}
-	return Goes
-}
-func GenMod(cfg, generatePath string) *generate.Model {
-	model := &generate.Model{}
-	_, _ = flags.Parse(model)
-	model.Shared.Target = flags.Filename(generatePath)
-	model.Shared.Spec = flags.Filename(cfg)
-	//opts := new(generator.GenOpts)
-	//fmt.Println("spec path is", (*opts).Models)
-	//err := generator.GenerateModels(model.Name, new())
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-
-	if err := model.Execute([]string{}); err != nil {
-		logger.Log().Errorf("error %v", err)
-	}
-
-	return model
+	return nodeMap
 }
 
-func UnwrapAst(file *ast.File) {
-	// todo: comment this madness
-
-	for i := range file.Decls {
-
-		d := file.Decls[i]
-		switch d.(type) {
-		case *ast.FuncDecl:
-		case *ast.GenDecl:
-			dd := d.(*ast.GenDecl).Specs
-			for ii := range dd {
-
-				spc := dd[ii]
-
-				switch spc.(type) {
-				case *ast.ImportSpec:
-				case *ast.ValueSpec:
-				case *ast.TypeSpec:
-					tp := spc.(*ast.TypeSpec).Type
-					list := tp.(*ast.StructType).Fields.List
-					for iii := range list {
-						for namesIdx := range list[iii].Names {
-							expression := list[iii].Type
-							switch expression.(type) {
-							case *ast.ArrayType:
-								arrPart := expression.(*ast.ArrayType).Elt
-								arrString := fmt.Sprintf("%v", arrPart)
-								if arrString[0] == '&' {
-									arrStrings := strings.Split(arrString, " ")
-									arrString = arrStrings[1]
-									arrBytes := []byte(arrString)
-									arrBytes = arrBytes[:len(arrBytes)-1]
-									arrString = "*" + string(arrBytes)
-								}
-								arrString = fmt.Sprintf("[]%s", arrString)
-								fmt.Println(list[iii].Names[namesIdx].String(), arrString)
-							case *ast.MapType:
-								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.MapType).Key, expression.(*ast.MapType).Value)
-							case *ast.SliceExpr:
-								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.SliceExpr).X)
-							case *ast.StarExpr:
-								starPart := expression.(*ast.StarExpr).X
-								starString := fmt.Sprintf("%s", starPart) // we can't use starPart as a string
-								runed := []byte(starString)
-								var newRuned []byte
-								if string(runed[0]) == "&" {
-									for runeIDX := range runed {
-										if string(runed[runeIDX]) != "&" &&
-											string(runed[runeIDX]) != "{" &&
-											string(runed[runeIDX]) != "}" {
-											newRuned = append(newRuned, runed[runeIDX])
-										}
-									}
-									toMerge := strings.Split(string(newRuned), " ")
-									starString = fmt.Sprintf("%s.%s", toMerge[0], toMerge[1])
-								}
-								str := fmt.Sprintf("*%s", starString)
-
-								fmt.Println(list[iii].Names[namesIdx].String(), str)
-							}
-						}
-					}
-				}
-			}
+// EvaluateMapArraySize is needed to evaluate the number
+// of maps would be created for specific node
+func evaluateMapArraySize(m map[string]any, mat MapArrayType) (int, error) {
+	var count int
+	for title := range m {
+		pm := m[title].([]*yaml.Node)
+		if pm == nil {
+			return 0, warp_errors.ErrNilMap
+		}
+		switch mat {
+		case RestMethodsMAT:
+			count = restMapSizeCount(pm)
+		case DefinitionsMAT:
+			count = len(m)
 		}
 	}
 
+	return count, nil
+}
+
+func restMapSizeCount(node []*yaml.Node) int {
+	var count int
+	for i := range node {
+		switch node[i].Value {
+		case "post":
+			count += 1
+		case "get":
+			count += 1
+		}
+	}
+	return count
+}
+
+func PrepareMapArray(m map[string]any, mat MapArrayType) ([]map[string]any, error) {
+	count, err := evaluateMapArraySize(m, mat)
+	if err != nil {
+		return nil, fmt.Errorf("error while counting map size: %w", err)
+	}
+	mapArray := make([]map[string]any, count)
+
+	mapArray = append(mapArray[count:]) // cut empty maps
+	return mapArray, nil
 }
