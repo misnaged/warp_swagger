@@ -1,9 +1,22 @@
+/*
+
+
+
+	 	Deprecated,
+
+		but could be used in future
+		if we would be needed to parse raw .yml
+
+*/
+
 package yaml_parser
 
+/*
 import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 	"warp_swagger/config_swagger"
+	"warp_swagger/models"
 	"warp_swagger/utils"
 	"warp_swagger/warp_errors"
 )
@@ -21,16 +34,6 @@ func NewParser(path string) (*Parser, error) {
 	}
 
 	return p, nil
-}
-
-func (p *Parser) CollectDefinitions() ([]map[string]any, error) {
-	m := p.SwaggerCfg.SwagBP.DefinitionsMap
-	mapArr, err := utils.PrepareMapArray(m, utils.DefinitionsMAT)
-	if err != nil {
-		return nil, fmt.Errorf("collecting definitions ended with an error: %w", err)
-	}
-	mapArr = append(mapArr, utils.Unwrap(p.SwaggerCfg.Definitions.DefinitionsNode))
-	return mapArr, nil
 }
 
 // CollectRESTmethods searching any (post and get, at this time) kind of REST methods
@@ -59,3 +62,30 @@ func (p *Parser) CollectRESTmethods() ([]map[string]any, error) {
 	}
 	return mapArr, nil
 }
+
+
+
+func (p *Parser) NewDefinition() *models.Definitions {
+	m, _ := p.collectDefinitions()
+	var str []string
+	for i := range m {
+		for n := range m[i] {
+			str = append(str, n)
+		}
+	}
+	fmt.Println(str)
+	kek := models.NewDefinition(str[0])
+	return kek
+}
+func (p *Parser) collectDefinitions() ([]map[string]any, error) {
+	m := p.SwaggerCfg.SwagBP.DefinitionsMap
+	ooo := p.SwaggerCfg.Definitions.DefinitionsNode
+
+	mapArr, err := utils.PrepareMapArray(m, utils.DefinitionsMAT)
+	if err != nil {
+		return nil, fmt.Errorf("collecting definitions ended with an error: %w", err)
+	}
+	mapArr = append(mapArr, utils.Unwrap(p.SwaggerCfg.Definitions.DefinitionsNode))
+	return mapArr, nil
+}
+*/
