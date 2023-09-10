@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/go-openapi/spec v0.20.9
 	github.com/go-swagger/go-swagger v0.30.5
+	github.com/jessevdk/go-flags v1.5.0
 	github.com/misnaged/annales v0.0.5
 	golang.org/x/tools v0.13.0
 )
@@ -29,7 +30,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/jessevdk/go-flags v1.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
