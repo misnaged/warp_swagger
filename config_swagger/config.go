@@ -1,4 +1,4 @@
-package config_swagger
+package config_swagger //nolint:all
 
 import "github.com/go-openapi/spec"
 
@@ -7,5 +7,4 @@ type SwaggerCfg struct {
 }
 
 func (s *SwaggerCfg) GetSpec() {
-	s.Spec.Definitions
 }

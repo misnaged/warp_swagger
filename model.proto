@@ -1,0 +1,13 @@
+syntax = "proto3";
+package dummy.models;
+
+option go_package = "protocols/dummy";
+
+message DummyArr {
+  repeated DummyMessage dummies = 1;
+}
+
+message DummyMessage {
+  string DummyString = 1;
+  int64 DummyInt64 = 2;
+}
