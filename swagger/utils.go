@@ -1,4 +1,4 @@
-package utils
+package swagger
 
 import (
 	"fmt"
@@ -46,10 +46,8 @@ func GenMod(cfg, generatePath string) *generate.Model {
 
 	return model
 }
-
-func UnwrapAst(file *ast.File) {
-	//   todo: comment this madness
-
+func unwrapAst(file *ast.File) []string {
+	var names []string
 	for i := range file.Decls {
 
 		d := file.Decls[i]
@@ -69,6 +67,7 @@ func UnwrapAst(file *ast.File) {
 					list := tp.(*ast.StructType).Fields.List
 					for iii := range list {
 						for namesIdx := range list[iii].Names {
+							names = append(names, list[iii].Names[namesIdx].String())
 							expression := list[iii].Type
 							switch expression.(type) { //nolint:all
 							case *ast.ArrayType:
@@ -89,7 +88,7 @@ func UnwrapAst(file *ast.File) {
 								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.SliceExpr).X) //nolint:gosimple
 							case *ast.StarExpr:
 								starPart := expression.(*ast.StarExpr).X  //nolint:gosimple
-								starString := fmt.Sprintf("%s", starPart) //   we can't use starPart as a string
+								starString := fmt.Sprintf("%s", starPart) // we can't use starPart as a string
 								runed := []byte(starString)
 								var newRuned []byte
 								if string(runed[0]) == "&" {
@@ -113,5 +112,5 @@ func UnwrapAst(file *ast.File) {
 			}
 		}
 	}
-
+	return names
 }
