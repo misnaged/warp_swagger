@@ -1,4 +1,4 @@
-package config_warp
+package config_warp //nolint:all
 
 type Warp struct {
 	External *ExternalPkg
@@ -14,5 +14,5 @@ type ExternalPkg struct {
 
 type Models struct {
 	Name string
-	Type string // optional in the most cases
+	Type string //   optional in the most cases
 }

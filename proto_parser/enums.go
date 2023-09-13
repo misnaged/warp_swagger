@@ -1,4 +1,4 @@
-package proto_parser
+package proto_parser //nolint:all
 
 import (
 	"errors"

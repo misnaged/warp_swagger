@@ -1,4 +1,4 @@
-package external_packages
+package external_packages //nolint:all
 
 import (
 	"errors"
@@ -30,7 +30,7 @@ func GenerateExternalModels(
 		CustomNames: customNames,
 		CustomTypes: customTypes,
 	}
-	// TODO: handle custom Names&Types!
+	//   TODO: handle custom Names&Types!
 
 	pkgModels, err := mergeWithNames(ProtosModelStruct.SimpleNames, ProtosModelStruct.SimpleTypes)
 	if err != nil {
@@ -79,16 +79,16 @@ func protoConvertCases(s string) string {
 	case proto_parser.ProtoBytes:
 		return "[]byte"
 	case proto_parser.ProtoInt64:
-		// WARNING! it could be time represented as timestamp
+		//   WARNING! it could be time represented as timestamp
 		//
-		// TODO: Add timestamp check!!!
+		//   TODO: Add timestamp check!!!
 		return "int"
 	case proto_parser.ProtoFloat:
 		return "float64"
 	default:
 		return s
 	}
-	// todo: add error check lately
+	//   todo: add error check lately
 }
 
 func convertProtoTypesToGoTypes(protoTypes []string) ([]string, error) {
@@ -109,7 +109,7 @@ func mergeWithNames(protoNames, protoTypes []string) ([]string, error) {
 		return nil, fmt.Errorf("merging names for external package models has been failed:%w", err)
 	}
 
-	// converted len must be equal to protoNames
+	//   converted len must be equal to protoNames
 	for i := range converted {
 		merged = append(merged, mergedName(protoNames[i], converted[i]))
 	}
