@@ -60,3 +60,4 @@ generate-proto:
 update_subtree:
 	git subtree split --rejoin --prefix protocols && git subtree pull --prefix=protocols git@github.com:gateway-fm/protocols.git main --squash
 
+# no thi ng
