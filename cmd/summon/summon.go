@@ -10,7 +10,7 @@ func Cmd(app *internal.App) *cobra.Command {
 		Use:   "summon",
 		Short: "summon",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			//TODO: Rebuild with cobra flags
+			//  TODO: Rebuild with cobra flags
 			if err := app.Summon(); err != nil {
 				return err
 			}

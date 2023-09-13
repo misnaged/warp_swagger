@@ -14,5 +14,5 @@ type ExternalPkg struct {
 
 type Models struct {
 	Name string
-	Type string // optional in the most cases
+	Type string //   optional in the most cases
 }

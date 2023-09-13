@@ -23,10 +23,7 @@ func GoFiles(pathPart string) []string {
 	pkgs, err := packages.Load(cfg, path)
 	if err == nil {
 		for _, pkg := range pkgs {
-			for i := range pkg.GoFiles {
-				Goes = append(Goes, pkg.GoFiles[i])
-			}
-
+			Goes = append(Goes, pkg.GoFiles...)
 		}
 	}
 	return Goes
@@ -36,12 +33,12 @@ func GenMod(cfg, generatePath string) *generate.Model {
 	_, _ = flags.Parse(model)
 	model.Shared.Target = flags.Filename(generatePath)
 	model.Shared.Spec = flags.Filename(cfg)
-	//opts := new(generator.GenOpts)
-	//fmt.Println("spec path is", (*opts).Models)
-	//err := generator.GenerateModels(model.Name, new())
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
+	//  opts := new(generator.GenOpts)
+	//  fmt.Println("spec path is", (*opts).Models)
+	//  err := generator.GenerateModels(model.Name, new())
+	//  if err != nil {
+	//  	log.Fatalln(err)
+	//  }
 
 	if err := model.Execute([]string{}); err != nil {
 		logger.Log().Errorf("error %v", err)
@@ -51,23 +48,23 @@ func GenMod(cfg, generatePath string) *generate.Model {
 }
 
 func UnwrapAst(file *ast.File) {
-	// todo: comment this madness
+	//   todo: comment this madness
 
 	for i := range file.Decls {
 
 		d := file.Decls[i]
 		switch d.(type) {
-		case *ast.FuncDecl:
-		case *ast.GenDecl:
+		case *ast.FuncDecl: //nolint:gocritic
+		case *ast.GenDecl: //nolint:gocritic
 			dd := d.(*ast.GenDecl).Specs
 			for ii := range dd {
 
 				spc := dd[ii]
 
 				switch spc.(type) {
-				case *ast.ImportSpec:
-				case *ast.ValueSpec:
-				case *ast.TypeSpec:
+				case *ast.ImportSpec: //nolint:gocritic
+				case *ast.ValueSpec: //nolint:gocritic
+				case *ast.TypeSpec: //nolint:gocritic
 					tp := spc.(*ast.TypeSpec).Type
 					list := tp.(*ast.StructType).Fields.List
 					for iii := range list {
@@ -75,7 +72,7 @@ func UnwrapAst(file *ast.File) {
 							expression := list[iii].Type
 							switch expression.(type) {
 							case *ast.ArrayType:
-								arrPart := expression.(*ast.ArrayType).Elt
+								arrPart := expression.(*ast.ArrayType).Elt //nolint:gosimple
 								arrString := fmt.Sprintf("%v", arrPart)
 								if arrString[0] == '&' {
 									arrStrings := strings.Split(arrString, " ")
@@ -87,12 +84,12 @@ func UnwrapAst(file *ast.File) {
 								arrString = fmt.Sprintf("[]%s", arrString)
 								fmt.Println(list[iii].Names[namesIdx].String(), arrString)
 							case *ast.MapType:
-								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.MapType).Key, expression.(*ast.MapType).Value)
+								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.MapType).Key, expression.(*ast.MapType).Value) //nolint:gosimple
 							case *ast.SliceExpr:
-								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.SliceExpr).X)
+								fmt.Println(list[iii].Names[namesIdx].String(), expression.(*ast.SliceExpr).X) //nolint:gosimple
 							case *ast.StarExpr:
-								starPart := expression.(*ast.StarExpr).X
-								starString := fmt.Sprintf("%s", starPart) // we can't use starPart as a string
+								starPart := expression.(*ast.StarExpr).X  //nolint:gosimple
+								starString := fmt.Sprintf("%s", starPart) //   we can't use starPart as a string
 								runed := []byte(starString)
 								var newRuned []byte
 								if string(runed[0]) == "&" {

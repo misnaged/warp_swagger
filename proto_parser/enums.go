@@ -24,7 +24,7 @@ const (
 	ProtoString
 	ProtoBytes
 
-	// CustomProtoType
+	//   CustomProtoType
 	/*
 		message CustomMsg{
 			string someString = 1;

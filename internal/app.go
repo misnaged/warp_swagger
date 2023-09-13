@@ -33,8 +33,8 @@ func (app *App) prepareTemplates() error {
 		return fmt.Errorf("PrepareTemplates returned an error:%w", err)
 	}
 
-	//TODO: refactor: get rid off ***simpleNames, simpleTypes, customNames, customTypes []string***
-	// using something  similar to []*ParsedMsg is preferable
+	//  TODO: refactor: get rid off ***simpleNames, simpleTypes, customNames, customTypes []string***
+	//   using something  similar to []*ParsedMsg is preferable
 	var simpleNames, simpleTypes, customNames, customTypes []string
 
 	for i := range primitive {
@@ -46,7 +46,7 @@ func (app *App) prepareTemplates() error {
 		customTypes = append(customTypes, custom[i].ParsedTypes)
 	}
 
-	// *******************-- TO DO --********************* //
+	//   *******************-- TO DO --********************* //
 
 	templates, err := warp_generator.Templates(app.WarpCfg(), simpleNames, simpleTypes, customNames, customTypes)
 	app.templates = templates

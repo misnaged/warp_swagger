@@ -92,7 +92,7 @@ func (p *parser) parse(path string) ([]string, []string, error) {
 	}
 	for i := range model.ProtoBody {
 		for ii := range model.ProtoBody[i].MessageBody {
-			//fmt.Printf("%s %s \n", model.ProtoBody[i].MessageBody[ii].FieldName, model.ProtoBody[i].MessageBody[ii].Type)
+			// fmt.Printf("%s %s \n", model.ProtoBody[i].MessageBody[ii].FieldName, model.ProtoBody[i].MessageBody[ii].Type)
 			parsedNames = append(parsedNames, model.ProtoBody[i].MessageBody[ii].FieldName)
 			parsedTypes = append(parsedTypes, model.ProtoBody[i].MessageBody[ii].Type)
 		}

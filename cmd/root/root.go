@@ -31,7 +31,7 @@ func initializeConfig(cmd *cobra.Command, cfg *config_warp.Warp) error {
 		}
 	}
 
-	// set config via env vars
+	//   set config via env vars
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 	viper.AllowEmptyEnv(true)
