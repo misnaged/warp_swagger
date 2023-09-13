@@ -1,23 +1,18 @@
 package config_warp
 
-type WarpCfg struct {
-	LibraryAPI *LibraryAPI
-	GatewayAPI *GatewayAPI
+type Warp struct {
+	External *ExternalPkg
+}
+type ExternalPkg struct {
+	Models      []*Models
+	Output      string
+	PackageName string
+	ProtoName   string
+	ProtoPath   string
+	PackageURL  string
 }
 
-type GatewayAPI struct {
-	Definitions *Definitions
-}
-
-type LibraryAPI struct {
-	Definitions *Definitions
-}
-
-type Definitions struct {
-	Properties *Properties
-}
-
-type Properties struct {
-	PropName string
-	PropType any
+type Models struct {
+	Name string
+	Type string // optional in the most cases
 }

@@ -1,17 +1,26 @@
 package main
 
+import (
+	"github.com/gateway-fm/warp_swagger/cmd/root"
+	"github.com/gateway-fm/warp_swagger/cmd/summon"
+	"github.com/gateway-fm/warp_swagger/internal"
+	"github.com/misnaged/annales/logger"
+	"os"
+)
+
 func main() {
-	path := "../get.yaml"
-	//if err != nil {
-	//	logger.Log().Errorf("%v", err)
-	//}
+	app, err := internal.NewApplication()
 
-	//m, err := p.NewDefinition()
-	//if err != nil {
-	//	logger.Log().Errorf("%v", err)
-	//}
-	//m := p.NewDefinition()
-	//fmt.Println(m.Name)
-	//fmt.Println(m[0]["shop"].([]*yaml.Node)[1].Value)
+	if err != nil {
+		logger.Log().Errorf("An error occurred %v", err)
+		os.Exit(1)
+	}
 
+	rootCmd := root.Cmd(app)
+	rootCmd.AddCommand(summon.Cmd(app))
+
+	if err = rootCmd.Execute(); err != nil {
+		logger.Log().Errorf("An error occurred %v", err)
+		os.Exit(1)
+	}
 }
