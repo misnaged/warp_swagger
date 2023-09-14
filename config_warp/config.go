@@ -2,6 +2,7 @@ package config_warp //nolint:all
 
 type Warp struct {
 	External *ExternalPkg
+	Handlers *ExternalPkg
 }
 type ExternalPkg struct {
 	Models      []*Models
