@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gateway-fm/warp_swagger/cmd/dummy"
 	"github.com/gateway-fm/warp_swagger/cmd/root"
 	"github.com/gateway-fm/warp_swagger/cmd/summon"
 	"github.com/gateway-fm/warp_swagger/cmd/swagger"
@@ -20,6 +21,7 @@ func main() {
 	rootCmd := root.Cmd(app)
 	rootCmd.AddCommand(summon.Cmd(app))
 	rootCmd.AddCommand(swagger.Cmd(app))
+	rootCmd.AddCommand(dummy.Cmd(app))
 
 	if err = rootCmd.Execute(); err != nil {
 		logger.Log().Errorf("An error occurred %v", err)

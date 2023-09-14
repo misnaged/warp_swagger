@@ -15,6 +15,7 @@ type App struct {
 	swagCfg   *config_swagger.SwaggerCfg
 	templates []templater.ITemplate
 	swag      swagger.ISwagger
+	dummy     swagger.IDummy
 }
 
 func (app *App) WarpCfg() *config_warp.Warp {
@@ -32,6 +33,16 @@ func NewApplication() (app *App, err error) {
 	return
 }
 
+func (app *App) CallDummy() error {
+	d := swagger.NewDummy()
+
+	err := d.Call()
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	app.dummy = d
+	return nil
+}
 func (app *App) SwaggerGenerate(args []string) error {
 	swag := swagger.NewSwagger(app.SwagCfg())
 	fmt.Println(args[0])
@@ -43,6 +54,9 @@ func (app *App) SwaggerGenerate(args []string) error {
 	return nil
 }
 func (app *App) prepareTemplates() error {
+	if err := app.CallDummy(); err != nil {
+		return fmt.Errorf("failed to call dummy: %w", err)
+	}
 	protoParser := proto_parser.NewIProtoParser()
 	fmt.Println(app.WarpCfg().External.ProtoPath)
 
@@ -66,11 +80,14 @@ func (app *App) prepareTemplates() error {
 
 	//   *******************-- TO DO --********************* //
 
-	templates, err := warp_generator.Templates(app.WarpCfg(), simpleNames, simpleTypes, customNames, customTypes)
+	templates, err := warp_generator.Templates(app.WarpCfg(), simpleNames, simpleTypes, customNames, customTypes, app.dummy.GetHandlersModel())
 	if err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	app.templates = templates
+	for i := range app.templates {
+		fmt.Println(app.templates[i])
+	}
 	return nil
 }
 

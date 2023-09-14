@@ -49,8 +49,9 @@ ifeq (generate,$(firstword $(MAKECMDGOALS)))
   $(eval $(ARGS):;@:)
 endif
 
+doom:
+	@MallocNanoZone=0 go run -race $(APP_ENTRY_POINT) dummy
 
-# example: make migration-create init
 summon:
 	@MallocNanoZone=0 go run -race $(APP_ENTRY_POINT) summon
 generate:
