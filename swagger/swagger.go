@@ -71,8 +71,8 @@ func OperationCheck(oper *spec.Operation) bool {
 	}
 	return false
 }
-func GetHandlerOutputName(operId, restMethod string) string {
-	output := fmt.Sprintf("%s_%s.go", operId, restMethod)
+func GetHandlerOutputName(operID, restMethod string) string {
+	output := fmt.Sprintf("%s_%s.go", operID, restMethod)
 	return output
 }
 func collect(collection []string, str ...string) []string {
