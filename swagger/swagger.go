@@ -3,15 +3,9 @@ package swagger
 import (
 	"fmt"
 	"github.com/gateway-fm/warp_swagger/config_swagger"
-	"github.com/go-openapi/inflect"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/spec"
 	"github.com/go-swagger/go-swagger/cmd/swagger/commands/generate"
-	"github.com/go-swagger/go-swagger/codescan"
-	"github.com/misnaged/annales/logger"
-	"go/ast"
-	"go/parser"
-	"go/token"
 	"os"
 )
 
@@ -55,6 +49,7 @@ func (s *swaggerSpec) Generate(genType string) error {
 	return nil
 }
 
+/*
 func SpecParser(path string) (*spec.Swagger, error) {
 	sp, err := loadSpec(path)
 	if err != nil {
@@ -71,7 +66,7 @@ func SpecParser(path string) (*spec.Swagger, error) {
 	return swagSpec, nil
 }
 
-// TEST !!!
+
 func swag() {
 	logger.Log().Warn("start")
 	cfg := "test.yaml"
@@ -100,6 +95,7 @@ func swag() {
 	}
 
 }
+*/
 
 // source:
 // https://github.com/go-swagger/go-swagger/blob/1182d398c09304dcb6aeafa827b5cc28b0ff54b6/cmd/swagger/commands/generate/spec_go111.go#L65
