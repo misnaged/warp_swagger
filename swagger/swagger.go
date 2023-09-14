@@ -56,7 +56,7 @@ func (d *dummy) swag() {
 
 	var paths []string
 
-	for k, _ := range l.Paths.Paths {
+	for k := range l.Paths.Paths {
 		paths = append(paths, k)
 	}
 
@@ -66,10 +66,7 @@ func (d *dummy) swag() {
 
 }
 func OperationCheck(oper *spec.Operation) bool {
-	if oper != nil {
-		return true
-	}
-	return false
+	return oper != nil
 }
 func GetHandlerOutputName(operID, restMethod string) string {
 	output := fmt.Sprintf("%s_%s.go", operID, restMethod)
