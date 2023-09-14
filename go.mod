@@ -3,6 +3,7 @@ module github.com/misnaged/warp_swagger
 go 1.20
 
 require (
+	github.com/go-openapi/inflect v0.19.0
 	github.com/go-openapi/loads v0.21.2
 	github.com/go-openapi/spec v0.20.9
 	github.com/go-swagger/go-swagger v0.30.5
@@ -23,7 +24,6 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 //  indirect
 	github.com/go-openapi/analysis v0.21.4 //  indirect
 	github.com/go-openapi/errors v0.20.4 //  indirect
-	github.com/go-openapi/inflect v0.19.0 //  indirect
 	github.com/go-openapi/jsonpointer v0.19.6 //  indirect
 	github.com/go-openapi/jsonreference v0.20.2 //  indirect
 	github.com/go-openapi/runtime v0.26.0 //  indirect
