@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/gateway-fm/warp_swagger/config_warp"
 	"github.com/gateway-fm/warp_swagger/internal"
 )
 
@@ -18,13 +17,14 @@ func Cmd(app *internal.App) *cobra.Command {
 		Short:            "warp_swagger",
 		TraverseChildren: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			return initializeConfig(cmd, app.WarpCfg())
+			cfgs := []any{app.WarpCfg(), app.SwagCfg()}
+			return initializeConfig(cmd, cfgs)
 		},
 	}
 	return cmd
 }
 
-func initializeConfig(cmd *cobra.Command, cfg *config_warp.Warp) error {
+func initializeConfig(cmd *cobra.Command, cfgs []any) error {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return fmt.Errorf("read config file: %w", err)
@@ -37,8 +37,11 @@ func initializeConfig(cmd *cobra.Command, cfg *config_warp.Warp) error {
 	viper.AllowEmptyEnv(true)
 
 	bindFlags(cmd)
-
-	return viper.Unmarshal(cfg)
+	var unmarshall error
+	for i := range cfgs {
+		unmarshall = viper.Unmarshal(&cfgs[i])
+	}
+	return unmarshall
 }
 
 func bindFlags(cmd *cobra.Command) {

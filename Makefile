@@ -42,9 +42,9 @@ update:
 	go get -u ./...
 
 
-# the feature bellow allows to execute migration-create command
+# the feature bellow allows to execute command
 # without adding ARGS=... input
-ifeq (summon,$(firstword $(MAKECMDGOALS)))
+ifeq (generate,$(firstword $(MAKECMDGOALS)))
   ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(ARGS):;@:)
 endif
@@ -53,7 +53,8 @@ endif
 # example: make migration-create init
 summon:
 	@MallocNanoZone=0 go run -race $(APP_ENTRY_POINT) summon
-
+generate:
+	@MallocNanoZone=0 go run -race $(APP_ENTRY_POINT) generate $(ARGS)
 generate-proto:
 	cd protocols/observer && protoc --go_out=paths=source_relative:. --go_opt=paths=source_relative  --go-grpc_out=paths=source_relative:. --go-grpc_opt=paths=source_relative  *.proto
 

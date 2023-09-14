@@ -1,10 +1,10 @@
 package config_swagger //nolint:all
 
-import "github.com/go-openapi/spec"
-
 type SwaggerCfg struct {
-	Spec *spec.Swagger
+	Models *Spec
+	Server *Spec
 }
 
-func (s *SwaggerCfg) GetSpec() {
+type Spec struct {
+	Output, SpecPath string
 }

@@ -12,7 +12,11 @@ import (
 )
 
 func BytesFromFile(path string) []byte {
-	b, _ := os.ReadFile(path)
+	b, err := os.ReadFile(path)
+	if err != nil {
+		logger.Log().Errorf("error while reading file:%v", err)
+		return nil
+	}
 	return b
 }
 
@@ -28,23 +32,42 @@ func GoFiles(pathPart string) []string {
 	}
 	return Goes
 }
-func GenMod(cfg, generatePath string) *generate.Model {
+func GenMod(cfg, generatePath string) (*generate.Model, error) {
+	if cfg == "" || generatePath == "" {
+		return nil, ErrNilGenerationPathOrOutput
+	}
 	model := &generate.Model{}
-	_, _ = flags.Parse(model)
+	_, err := flags.Parse(model)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse flags %w", err)
+	}
 	model.Shared.Target = flags.Filename(generatePath)
 	model.Shared.Spec = flags.Filename(cfg)
-	//  opts := new(generator.GenOpts)
-	//  fmt.Println("spec path is", (*opts).Models)
-	//  err := generator.GenerateModels(model.Name, new())
-	//  if err != nil {
-	//  	log.Fatalln(err)
-	//  }
 
-	if err := model.Execute([]string{}); err != nil {
-		logger.Log().Errorf("error %v", err)
+	if err = model.Execute([]string{}); err != nil {
+		return nil, fmt.Errorf("executing model generation failed:%w", err)
 	}
 
-	return model
+	return model, nil
+}
+
+func GenServer(cfg, generatePath string) (*generate.Server, error) {
+	if cfg == "" || generatePath == "" {
+		return nil, ErrNilGenerationPathOrOutput
+	}
+	server := &generate.Server{}
+	_, err := flags.Parse(server)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse flags %w", err)
+	}
+	server.Shared.Target = flags.Filename(generatePath)
+	server.Shared.Spec = flags.Filename(cfg)
+	server.ExcludeMain = true
+	if err = server.Execute([]string{}); err != nil {
+		return nil, fmt.Errorf("executing server generation failed:%w", err)
+	}
+
+	return server, nil
 }
 func unwrapAst(file *ast.File) []string {
 	var names []string

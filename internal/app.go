@@ -2,28 +2,46 @@ package internal
 
 import (
 	"fmt"
+	"github.com/gateway-fm/warp_swagger/config_swagger"
 	"github.com/gateway-fm/warp_swagger/config_warp"
 	"github.com/gateway-fm/warp_swagger/proto_parser"
+	"github.com/gateway-fm/warp_swagger/swagger"
 	"github.com/gateway-fm/warp_swagger/warp_generator"
 	"github.com/gateway-fm/warp_swagger/warp_generator/templater"
 )
 
 type App struct {
 	warpCfg   *config_warp.Warp
+	swagCfg   *config_swagger.SwaggerCfg
 	templates []templater.ITemplate
+	swag      swagger.ISwagger
 }
 
 func (app *App) WarpCfg() *config_warp.Warp {
 	return app.warpCfg
 }
+func (app *App) SwagCfg() *config_swagger.SwaggerCfg {
+	return app.swagCfg
+}
 
 func NewApplication() (app *App, err error) {
 	app = &App{
 		warpCfg: &config_warp.Warp{},
+		swagCfg: &config_swagger.SwaggerCfg{},
 	}
 	return
 }
 
+func (app *App) SwaggerGenerate(args []string) error {
+	swag := swagger.NewSwagger(app.SwagCfg())
+	fmt.Println(args[0])
+	fmt.Println(app.SwagCfg())
+
+	if err := swag.Generate(args[0]); err != nil {
+		return fmt.Errorf("failed to generate swagger:%w", err)
+	}
+	return nil
+}
 func (app *App) prepareTemplates() error {
 	protoParser := proto_parser.NewIProtoParser()
 	fmt.Println(app.WarpCfg().External.ProtoPath)
