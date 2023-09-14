@@ -1,4 +1,4 @@
-package config_api
+package config_api //nolint:all
 
 type CfgAPI struct {
 	GenerationOutput string

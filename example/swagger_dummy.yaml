@@ -1,0 +1,242 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Fashion Space"
+  description: "Bla bla bla"
+  termsOfService: ""
+  contact:
+    name: "Misnaged"
+  license:
+    name: "MIT"
+
+basePath: "/"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+securityDefinitions:
+  #    jwt:
+  #      type: apiKey
+  #      in: header
+  #      name: Bearer
+  OauthSecurity:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
+    tokenUrl: 'https://www.googleapis.com/oauth2/v4/token'
+
+#  security: [ ]
+
+paths:
+  /women:
+    get:
+      tags:
+        - shops
+        - stocks
+      operationId: getStocks
+      description: get Stock details
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/newStockItemRequest'
+        default:
+          $ref: '#/responses/errorResponse'
+  /shops/{name}:
+    parameters:
+      - $ref: '#/parameters/name'
+    get:
+      tags:
+        - shops
+      operationId: getShop
+      description: get Shop details
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/shop'
+        default:
+          $ref: '#/responses/errorResponse'
+
+  /shops/{name}/create_stock_item:
+    parameters:
+      - $ref: '#/parameters/name'
+    post:
+      #        security:
+      #          - jwt: [ ]
+      tags:
+        - shops
+        - stocks
+      operationId: createStockItem
+      description: create new stock item
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/newStockItemRequest'
+      responses:
+        200:
+          description: OK
+        default:
+          $ref: '#/responses/errorResponse'
+#      put:
+#        security:
+#          - jwt: [ ]
+#        tags:
+#          - battles
+#        operationId: updateBattle
+#        description: update battle by uuid
+#        parameters:
+#          - name: data
+#            in: body
+#            required: true
+#            schema:
+#              $ref: '#/definitions/editBattleRequest'
+#        responses:
+#          200:
+#            description: OK
+#            schema:
+#              $ref: '#/definitions/battle'
+#          default:
+#            $ref: '#/responses/errorResponse'
+
+
+parameters:
+  name:
+    description: models name getter
+    in: path
+    name: name
+    required: true
+    type: string
+  token:
+    description: email token vor verify user
+    in: path
+    name: token
+    required: true
+    type: string
+  socialProvider:
+    in: path
+    required: true
+    name: provider
+    description: >
+      available oAUTH social providers:
+        * facebook
+        * twitter
+        * google
+    type: string
+    enum:
+      - facebook
+      - twitter
+      - google
+
+
+responses:
+  errorResponse:
+    description: Error
+    schema:
+      $ref: '#/definitions/error'
+
+definitions:
+  newStockItemRequest:
+    description: request for create new stock item
+    type: object
+    properties:
+      uuid:
+        description: stock uuid
+        type: string
+        format: uuid
+      title:
+        description: item's title
+        type: string
+        example: Velvet Bodysuit
+      description:
+        description: item's description
+        type: string
+        example: bodysuit made from velvet
+      brand:
+        description: item's brand
+        type: string
+        example: gucci
+      price:
+        description: item's price
+        type: number
+        format: float64
+        example: 199.99
+      stock_type:
+        description: from what part of wardrobe this item is
+        type: string
+        example: Suit
+      source:
+        description: ...
+        type: string
+        example: ...
+    required:
+      - title
+      - source
+      - price
+      - description
+      - stock_type
+      - brand
+
+  shop:
+    description: shop model
+    type: object
+    properties:
+      uuid:
+        description: shop uuid
+        type: string
+        format: uuid
+        example: e0527b4c-926c-4a3f-8849-b7c4d9c348ca
+      name:
+        description: shop name
+        type: string
+        example: blablastore
+      #        creator:
+      #          description: battle creator
+      #          $ref: '#/definitions/userShort'
+      description:
+        description: shop description
+        type: string
+        example: blabla is good store
+      #        is_premium:
+      #          description: is this battle premium?
+      #          type: boolean
+      #          example: false
+      url:
+        description: shops urls
+        type: string
+        format: uri
+    required:
+      - uuid
+      - name
+      - description
+      - url
+  error:
+    description: the error model uses for all error responses
+    type: object
+    properties:
+      code:
+        description: error code
+        type: integer
+        format: int64
+        example: 500
+      message:
+        description: error message
+        type: string
+        example: internal server error
+      payload:
+        description: payload definition depended on specific request
+        type: object
+        additionalProperties:
+          type: string
+    required:
+      - message
+      - code
+
+

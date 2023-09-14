@@ -1,4 +1,15 @@
-package yaml_parser
+/*
+
+
+
+	 	Deprecated,
+
+		but could be used in future
+		if we would be needed to parse raw .yml
+
+*/
+
+package yaml_parser //nolint:all
 
 /*
 import (
@@ -25,8 +36,8 @@ func NewParser(path string) (*Parser, error) {
 	return p, nil
 }
 
-// CollectRESTmethods searching any (post and get, at this time) kind of REST methods
-// in the 'paths' section of config (where they normally should be defined)
+//   CollectRESTmethods searching any (post and get, at this time) kind of REST methods
+//   in the 'paths' section of config (where they normally should be defined)
 func (p *Parser) CollectRESTmethods() ([]map[string]any, error) {
 	m := p.SwaggerCfg.SwagBP.PathsMap
 	mapArr, err := utils.PrepareMapArray(m, utils.RestMethodsMAT)
