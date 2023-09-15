@@ -62,7 +62,7 @@ func GenServer(cfg, generatePath string) (*generate.Server, error) {
 	}
 	server.Shared.Target = flags.Filename(generatePath)
 	server.Shared.Spec = flags.Filename(cfg)
-	//server.Name
+	// server.Name
 	server.ServerPackage = "internal/server"
 	server.ExcludeMain = true
 	if err = server.Execute([]string{}); err != nil {

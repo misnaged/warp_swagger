@@ -49,7 +49,7 @@ func (d *dummy) swag() {
 		newP := strings.Split(paths[i], "/")
 		pathOperations = append(pathOperations, OperationsPath(newP[1]))
 	}
-	//pathOperations = RemoveDupes(pathOperations)
+	// pathOperations = RemoveDupes(pathOperations)
 
 	for i := range paths {
 		d.Handlers.Operations = append(d.Handlers.Operations, ParseOperations(l.Paths.Paths[paths[i]], pathOperations[i]))
