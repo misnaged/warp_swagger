@@ -62,6 +62,8 @@ func GenServer(cfg, generatePath string) (*generate.Server, error) {
 	}
 	server.Shared.Target = flags.Filename(generatePath)
 	server.Shared.Spec = flags.Filename(cfg)
+	// server.Name
+	server.ServerPackage = "internal/server"
 	server.ExcludeMain = true
 	if err = server.Execute([]string{}); err != nil {
 		return nil, fmt.Errorf("executing server generation failed:%w", err)
@@ -136,4 +138,15 @@ func unwrapAst(file *ast.File) []string {
 		}
 	}
 	return names
+}
+func RemoveDupes(sliceToCheck []string) []string {
+	m := make(map[string]string)
+	var cleanSlice []string
+	for i := range sliceToCheck {
+		m[sliceToCheck[i]] = ""
+	}
+	for i := range m {
+		cleanSlice = append(cleanSlice, i)
+	}
+	return cleanSlice
 }

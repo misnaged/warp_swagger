@@ -3,9 +3,11 @@ package models
 type Handlers struct {
 	Operations []*Operation
 }
+
 type Operation struct {
+	OperationsPath string
+	OperationID    string
 	OutputFileName string
-	OperaID        string
 	Param          string
 }
 
@@ -13,9 +15,10 @@ func NewHandler() *Handlers {
 	return &Handlers{}
 }
 
-func NewOperation(output, operaID string) *Operation {
+func NewOperation(output, operationID, operationsPath string) *Operation {
 	return &Operation{
 		OutputFileName: output,
-		OperaID:        operaID,
+		OperationID:    operationID,
+		OperationsPath: operationsPath,
 	}
 }

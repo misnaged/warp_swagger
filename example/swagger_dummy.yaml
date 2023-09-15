@@ -31,22 +31,6 @@ securityDefinitions:
 #  security: [ ]
 
 paths:
-  /women:
-    get:
-      tags:
-        - shops
-        - stocks
-      operationId: getStocks
-      description: get Stock details
-      responses:
-        200:
-          description: OK
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/newStockItemRequest'
-        default:
-          $ref: '#/responses/errorResponse'
   /shops/{name}:
     parameters:
       - $ref: '#/parameters/name'
@@ -62,7 +46,29 @@ paths:
             $ref: '#/definitions/shop'
         default:
           $ref: '#/responses/errorResponse'
-
+  /matches/list:
+    get:
+      security:
+        - jwt: []
+      tags:
+        - matches
+      operationId: listMatches
+      description: get matches list for choosen date (default today)
+      parameters:
+        - name: date
+          description: date filter (string format)
+          in: query
+          type: string
+          format: date
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/match'
+        default:
+          $ref: '#/responses/errorResponse'
   /shops/{name}/create_stock_item:
     parameters:
       - $ref: '#/parameters/name'
@@ -85,6 +91,7 @@ paths:
           description: OK
         default:
           $ref: '#/responses/errorResponse'
+
 #      put:
 #        security:
 #          - jwt: [ ]
@@ -238,5 +245,30 @@ definitions:
     required:
       - message
       - code
+  match:
+    description: math model
+    type: object
+    properties:
+      uuid:
+        description: match UUID
+        type: string
+        format: uuid
+      title:
+        description: match title with contestants squads
+        type: string
+      datetime:
+        description: datetime timestamp
+        type: integer
+        format: 'date-time'
+      competition:
+        description: match related competition
+        type: string
+      stadium:
+        description: match stadium
+        type: string
+    required:
+      - uuid
+      - title
+      - datetime
 
 

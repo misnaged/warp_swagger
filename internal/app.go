@@ -45,8 +45,8 @@ func (app *App) CallDummy() error {
 }
 func (app *App) SwaggerGenerate(args []string) error {
 	swag := swagger.NewSwagger(app.SwagCfg())
-	fmt.Println(args[0])
-	fmt.Println(app.SwagCfg())
+	// fmt.Println(args[0])
+	// fmt.Println(app.SwagCfg())
 
 	if err := swag.Generate(args[0]); err != nil {
 		return fmt.Errorf("failed to generate swagger:%w", err)
@@ -58,7 +58,7 @@ func (app *App) prepareTemplates() error {
 		return fmt.Errorf("failed to call dummy: %w", err)
 	}
 	protoParser := proto_parser.NewIProtoParser()
-	fmt.Println(app.WarpCfg().External.ProtoPath)
+	// fmt.Println(app.WarpCfg().External.ProtoPath)
 
 	primitive, custom, err := protoParser.Parse(app.WarpCfg().External.ProtoPath)
 	if err != nil {
@@ -85,9 +85,9 @@ func (app *App) prepareTemplates() error {
 		return fmt.Errorf("%w", err)
 	}
 	app.templates = templates
-	for i := range app.templates {
-		fmt.Println(app.templates[i])
-	}
+	// for i := range app.templates {
+	// 	fmt.Println(app.templates[i])
+	// }
 	return nil
 }
 

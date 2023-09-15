@@ -17,13 +17,13 @@ func Templates(config *config_warp.Warp,
 		return nil, fmt.Errorf("failed while collecting templates: %w", err)
 	}
 	var hndlrs []templater.ITemplate
+
 	for i := range handlersModels.Operations {
-		hndlr, err := handlers.GenerateHandlers(handlersModels.Operations[i])
+		hndlr, err := handlers.GenerateHandlers(handlersModels.Operations[i], config, handlersModels.Operations[i].OperationsPath)
 		if err != nil {
 			return nil, fmt.Errorf("failed while collecting templates: %w", err)
 		}
 		hndlrs = append(hndlrs, hndlr)
-
 	}
 	hndlrs = append(hndlrs, external)
 	templates = templater.GetAll(hndlrs...)

@@ -15,17 +15,11 @@ builds:
       - arm
       - arm64
       - ppc64le
-    goarm:
-      - "6"
-      - "7"
-    goamd64:
-      - v2
-      - v3
-      - v4
+
 archives:
   - format: binary
     wrap_in_directory: false
-    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ if not (eq .Amd64 \"v1\") }}{{ .Amd64 }}{{ end }}"
+    name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
