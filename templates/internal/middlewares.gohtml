@@ -1,0 +1,90 @@
+{{define "middlewares_main" -}}
+    package middlewares
+
+    import(
+    "net/http"
+
+    "github.com/felixge/httpsnoop"
+    "github.com/justinas/alice"
+
+    "go.uber.org/zap"
+    "go.uber.org/zap/zapcore"
+
+    "github.com/rs/cors"
+
+    "github.com/dre1080/recovr"
+
+    "github.com/gateway-fm/scriptorium/logger"
+
+    )
+
+    // Recovery returns a new instance of Recovery middleware which traps panics
+    func Recovery() alice.Constructor {
+    return func(next http.Handler) http.Handler {
+    recovery := recovr.New()
+    return recovery(next)
+    }
+    }
+
+
+    // Cors returns a new instance of Cors middleware
+    // which providing cross-control origins rules
+    func Cors(next http.Handler) http.Handler {
+    c := cors.New(cors.Options{
+    AllowedOrigins:   []string{"*"},
+    AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+    AllowedHeaders:   []string{"*"},
+    ExposedHeaders:   []string{"*"},
+    MaxAge:           10,
+    AllowCredentials: true,
+    })
+    return c.Handler(next)
+    }
+
+
+    // Logger returns a new instance of Logger middleware
+    // which provides basic request logging
+    func Logger() alice.Constructor {
+    return func(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    m := httpsnoop.CaptureMetrics(next, w, r)
+
+    fields := []zapcore.Field{
+    zap.Int("status", m.Code),
+    zap.Duration("dt", m.Duration),
+    zap.Int64("written", m.Written),
+    }
+
+    logger.Log().With(
+    zap.Int("code", m.Code),
+    )
+    var output func(format string, field ...any)
+
+    switch {
+    case m.Code >= 500:
+    output = func(format string, field ...any) {
+    logger.Log().Error("server error", fields...)
+    }
+
+    case m.Code >= 400:
+    output = func(format string, field ...any) {
+    logger.Log().Warn("client error", fields...)
+    }
+    case m.Code >= 300:
+    output = func(format string, field ...any) {
+    logger.Log().Info("Redirection", fields...)
+    }
+
+    default:
+    output = func(format string, field ...any) {
+    logger.Log().Info("Success", fields...)
+    }
+    }
+
+    output("%s %s %s", r.Method, r.URL, r.Referer())
+    return
+    })
+    }
+    }
+
+{{end}}

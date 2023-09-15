@@ -45,8 +45,6 @@ func (app *App) CallDummy() error {
 }
 func (app *App) SwaggerGenerate(args []string) error {
 	swag := swagger.NewSwagger(app.SwagCfg())
-	// fmt.Println(args[0])
-	// fmt.Println(app.SwagCfg())
 
 	if err := swag.Generate(args[0]); err != nil {
 		return fmt.Errorf("failed to generate swagger:%w", err)
