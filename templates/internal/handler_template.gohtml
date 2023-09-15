@@ -2,9 +2,13 @@
 package handlers
 import (
 // imports are placed automatically
+    "github.com/go-openapi/runtime/middleware"
+
     ops "{{PackageURL}}/{{OperationsPath}}"
 )
-
+    func New{{OperationIDlc}}() *{{OperationIDlc}}{
+        return &{{OperationIDlc}}{}
+    }
     type {{OperationIDlc}} struct {
 
     }
