@@ -1,0 +1,35 @@
+{{define "app_main"}}
+
+    package internal
+
+        import(
+    "fmt"
+    "net/http"
+    "os"
+    "os/signal"
+    "syscall"
+    "time"
+
+    "github.com/go-openapi/loads"
+    "github.com/go-openapi/swag"
+    "github.com/justinas/alice"
+        )
+
+
+
+    type App struct {
+    // application configuration
+    config *config.Scheme
+
+    version *version.Version
+
+    server *server.Server
+
+    auth *auth.Auth
+
+    oAuth *oauth.ServiceOauth
+
+    gateguard gateguard.IGateguardAPI
+    rollups   rollups.IRollupsAPI
+    }
+{{end}}

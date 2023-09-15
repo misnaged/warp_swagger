@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/misnaged/annales/logger"
 	"go/format"
+	"io"
 	"os"
 	"path/filepath"
 	"sync"
@@ -24,6 +25,16 @@ type Template struct {
 	IsExcluded                         bool
 }
 
+func ExecHeaderTemplate(output io.Writer) error {
+	t, err := template.ParseFiles("templates/header.gohtml")
+	if err != nil {
+		return fmt.Errorf("error parsing templaties: %w", err)
+	}
+	if err = t.Execute(output, nil); err != nil {
+		return fmt.Errorf("failed to execute template %w", err)
+	}
+	return nil
+}
 func (t *Template) GenerateFile() error {
 
 	elems := t.Elems
@@ -31,7 +42,10 @@ func (t *Template) GenerateFile() error {
 	//   as an empty .go file and just "filled up" in this func
 	file, _ := os.Create(t.OutPutFilePath) //
 	defer file.Close()
-
+	err := ExecHeaderTemplate(file)
+	if err != nil {
+		return fmt.Errorf("header template execution returned an error: %w", err)
+	}
 	//   path to template file is absolute here, but it doesn't make any sense :D
 	pattern, _ := filepath.Abs(t.ConfigTemplatePath) //   .gotmpl is used because of IDE's supports only :D
 

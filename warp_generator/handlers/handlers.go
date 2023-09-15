@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gateway-fm/warp_swagger/config_warp"
 	"github.com/gateway-fm/warp_swagger/models"
 	"github.com/gateway-fm/warp_swagger/warp_generator/templater"
@@ -42,6 +43,7 @@ func GenerateHandlers(
 	funcMap := templater.CompleteFuncMap(funcNames, funcs)
 	elems := "handler_main"
 	ifaces := templater.GetTemplateInterfaces(operation)
-	template := templater.NewTemplate(path, operation.OutputFileName, ifaces, funcMap, elems)
+	output := fmt.Sprintf("internal/handlers/%s", operation.OutputFileName) //todo: remove hardcode
+	template := templater.NewTemplate(path, output, ifaces, funcMap, elems)
 	return template, nil
 }

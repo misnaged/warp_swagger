@@ -6,6 +6,7 @@ import (
 	"github.com/gateway-fm/warp_swagger/models"
 	"github.com/gateway-fm/warp_swagger/warp_generator/external_packages"
 	"github.com/gateway-fm/warp_swagger/warp_generator/handlers"
+	"github.com/gateway-fm/warp_swagger/warp_generator/middlewares"
 	"github.com/gateway-fm/warp_swagger/warp_generator/templater"
 )
 
@@ -25,7 +26,15 @@ func Templates(config *config_warp.Warp,
 		}
 		hndlrs = append(hndlrs, hndlr)
 	}
+	mdwrs, err := middlewares.GenerateHandlers(config)
+	if err != nil {
+		return nil, fmt.Errorf("failed while collecting templates: %w", err)
+	}
 	hndlrs = append(hndlrs, external)
+	hndlrs = append(hndlrs, mdwrs)
 	templates = templater.GetAll(hndlrs...)
+	for i := range templates {
+		fmt.Println(templates[i])
+	}
 	return templates, nil
 }
