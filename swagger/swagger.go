@@ -8,6 +8,7 @@ import (
 	"github.com/go-swagger/go-swagger/codescan"
 	"github.com/misnaged/annales/logger"
 	"os"
+	"strings"
 )
 
 type IDummy interface {
@@ -30,15 +31,6 @@ func (d *dummy) GetHandlersModel() *models.Handlers {
 	return d.Handlers
 }
 
-// func LogThis(path string) (*log.Logger, *os.File) {
-// 	kek, err := os.Create(path)
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
-// 	l := log.New(kek, "", 0)
-// 	return l, kek
-// }
-
 func (d *dummy) swag() {
 	logger.Log().Warn("start")
 	cfg := "./example/swagger_dummy.yaml"
@@ -47,23 +39,26 @@ func (d *dummy) swag() {
 	//	todo: handle
 	// }
 
-	// dl, file1 := LogThis("defs.txt")
-	// pl, file2 := LogThis("paths.txt")
-	// gl, file3 := LogThis("gets.txt")
-	// defer file3.Close()
-	// defer file2.Close()
-	// defer file1.Close()
-
 	var paths []string
 
 	for k := range l.Paths.Paths {
 		paths = append(paths, k)
 	}
+	var pathOperations []string
+	for i := range paths {
+		newP := strings.Split(paths[i], "/")
+		pathOperations = append(pathOperations, OperationsPath(newP[1]))
+	}
+	//pathOperations = RemoveDupes(pathOperations)
 
 	for i := range paths {
-		d.Handlers.Operations = append(d.Handlers.Operations, ParseOperations(l.Paths.Paths[paths[i]]))
+		d.Handlers.Operations = append(d.Handlers.Operations, ParseOperations(l.Paths.Paths[paths[i]], pathOperations[i]))
 	}
 
+}
+
+func OperationsPath(part string) string {
+	return fmt.Sprintf("internal/server/operations/%s", part)
 }
 func OperationCheck(oper *spec.Operation) bool {
 	return oper != nil
@@ -77,13 +72,18 @@ func collect(collection []string, str ...string) []string {
 	return collection
 }
 
-func ParseOperations(pathItem spec.PathItem) *models.Operation {
+func ParseOperations(pathItem spec.PathItem, operationalPath string) *models.Operation {
 	if OperationCheck(pathItem.Get) {
-
-		return models.NewOperation(GetHandlerOutputName(pathItem.Get.OperationProps.ID, "get"), pathItem.Get.OperationProps.ID)
+		return models.NewOperation(GetHandlerOutputName(pathItem.Get.OperationProps.ID, "get"),
+			pathItem.Get.OperationProps.ID,
+			operationalPath)
 	}
 	if OperationCheck(pathItem.Post) {
-		return models.NewOperation(GetHandlerOutputName(pathItem.Post.OperationProps.ID, "post"), pathItem.Post.OperationProps.ID)
+		return models.NewOperation(
+			GetHandlerOutputName(pathItem.Post.OperationProps.ID, "post"),
+			pathItem.Post.OperationProps.ID,
+			operationalPath)
+
 	}
 	return nil
 }
