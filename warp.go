@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	_ "embed"
 	"github.com/gateway-fm/warp_swagger/cmd/dummy"
 	"github.com/gateway-fm/warp_swagger/cmd/root"
 	"github.com/gateway-fm/warp_swagger/cmd/summon"

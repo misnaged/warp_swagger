@@ -72,7 +72,11 @@ func (app *App) prepareTemplates() error {
 		return fmt.Errorf("failed to call dummy: %w", err)
 	}
 	protoParser := proto_parser.NewIProtoParser()
-	requestModels, err := protoParser.Parse(app.WarpCfg().External.ProtoPath, "FetchedReqModelProto") //TODO   H A R D C O D E D ! ! !
+	requestModels, err := protoParser.Parse(app.WarpCfg().External.ProtoPath, "FetchedReqModelProto") // TODO   H A R D C O D E D ! ! !
+	if err != nil {
+		return fmt.Errorf("PrepareTemplates returned an error:%w", err)
+	}
+
 	dailyModels, err := protoParser.Parse(app.WarpCfg().External.ProtoPath, "DailyModelsProto")
 	if err != nil {
 		return fmt.Errorf("PrepareTemplates returned an error:%w", err)
