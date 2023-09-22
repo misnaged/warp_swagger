@@ -23,6 +23,7 @@ type dummy struct {
 func NewDummy() IDummy {
 	return &dummy{Handlers: models.NewHandler()}
 }
+
 func (d *dummy) Call() error {
 	d.swag()
 	return nil

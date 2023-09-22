@@ -20,7 +20,7 @@ func GenerateExternalModels(
 	config *config_warp.Warp,
 	simpleNames, simpleTypes, customNames, customTypes []string,
 ) (templater.ITemplate, error) {
-	path := "templates/pkg/models/external_pkg_models.gohtml"
+	path := "./templates/external_pkg_models.gohtml"
 
 	ProtosModelStruct := struct {
 		SimpleNames, SimpleTypes, CustomNames, CustomTypes []string
@@ -48,9 +48,9 @@ func GenerateExternalModels(
 	var PkgModels = func() []string {
 		return pkgModels
 	}
-	for i := range pkgModels {
-		fmt.Println(pkgModels[i])
-	}
+	//for i := range pkgModels {
+	//	fmt.Println(pkgModels[i])
+	//}
 	var funcNames = []string{
 		"PkgNameUC",
 		"ProtoName",
@@ -66,8 +66,9 @@ func GenerateExternalModels(
 	)
 	funcMap := templater.CompleteFuncMap(funcNames, funcs)
 	elems := "external_pkg_models"
+	output := fmt.Sprintf("pkg/%s/models/models.go", config.External.PackageName)
 	ifaces := templater.GetTemplateInterfaces(ProtosModelStruct)
-	template := templater.NewTemplate(path, config.External.Output, ifaces, funcMap, elems)
+	template := templater.NewTemplate(path, output, ifaces, funcMap, elems)
 	return template, nil
 }
 

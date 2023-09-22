@@ -5,11 +5,8 @@ type Warp struct {
 	External    *ExternalPkg
 	Handlers    *ExternalPkg
 }
-type Middlewares struct {
-}
 type ExternalPkg struct {
 	Models      []*Models
-	Output      string
 	PackageName string
 	ProtoName   string
 	ProtoPath   string

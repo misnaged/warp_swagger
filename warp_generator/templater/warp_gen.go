@@ -42,10 +42,10 @@ func (t *Template) GenerateFile() error {
 	//   as an empty .go file and just "filled up" in this func
 	file, _ := os.Create(t.OutPutFilePath) //
 	defer file.Close()
-	err := ExecHeaderTemplate(file)
-	if err != nil {
-		return fmt.Errorf("header template execution returned an error: %w", err)
-	}
+	//err := ExecHeaderTemplate(file)
+	//if err != nil {
+	//	return fmt.Errorf("header template execution returned an error: %w", err)
+	//}
 	//   path to template file is absolute here, but it doesn't make any sense :D
 	pattern, _ := filepath.Abs(t.ConfigTemplatePath) //   .gotmpl is used because of IDE's supports only :D
 

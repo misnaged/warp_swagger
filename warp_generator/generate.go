@@ -26,15 +26,15 @@ func Templates(config *config_warp.Warp,
 		}
 		hndlrs = append(hndlrs, hndlr)
 	}
-	mdwrs, err := middlewares.GenerateHandlers(config)
+	mdwrs, err := middlewares.GenerateMdws()
 	if err != nil {
 		return nil, fmt.Errorf("failed while collecting templates: %w", err)
 	}
 	hndlrs = append(hndlrs, external)
 	hndlrs = append(hndlrs, mdwrs)
 	templates = templater.GetAll(hndlrs...)
-	for i := range templates {
-		fmt.Println(templates[i])
-	}
+	//for i := range templates {
+	//	fmt.Println(templates[i])
+	//}
 	return templates, nil
 }
