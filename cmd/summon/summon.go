@@ -19,9 +19,6 @@ func Cmd(app *internal.App, header embed.FS) *cobra.Command {
 				return err
 			}
 			if err := app.Summon(); err != nil {
-				if err = cleanUp(); err != nil {
-					return fmt.Errorf("cleanUp failed to run:%w", err)
-				}
 				return err
 			}
 			if err := cleanUp(); err != nil {

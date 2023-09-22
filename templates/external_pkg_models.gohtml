@@ -2,22 +2,27 @@
     package models
 
     import (
-    //   imports are:
 
-    proto "{{PackageURL}}/{{PkgNameUC}}/models"
+    proto "{{PackageURL}}/{{ProtoPath}}"
 
     )
 
-     type {{PkgNameUC}} struct{
-        {{ range PkgModels}} {{ . }}
+     type {{PkgNameUC}}Daily struct{
+        {{ range Daily}} {{ . }}
             {{end}}
     }
 
-    func {{PkgNameUC}}FromProto(pb *proto.{{ProtoName}}) *{{PkgNameUC}}{
-
-
+    type {{PkgNameUC}}Requests struct{
+    {{ range Requests}} {{ . }}
+    {{end}}
     }
 
+    func {{PkgNameUC}}RequestsFromProto(pb *proto.{{ProtoName}}) *{{PkgNameUC}}{
+
+    }
+    func {{PkgNameUC}}DailyFromProto(pb *proto.{{ProtoName}}) *{{PkgNameUC}}{
+
+    }
 
 
     func {{PkgNameUC}}ToProto(){}
